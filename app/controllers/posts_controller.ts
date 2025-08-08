@@ -4,8 +4,8 @@ export default class PostsController {
   /**
    * Display a list of resource
    */
-  async index({}: HttpContext) {
-    return { message: 'List of posts' }
+  async index({ user }: HttpContext) {
+    return { message: 'List of posts', user }
   }
 
   /**

@@ -10,7 +10,6 @@ import {
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { randomUUID } from 'node:crypto'
 import User from '#models/user'
-import Site from '#models/site'
 import Category from '#models/category'
 import Attr from '#models/attr'
 
@@ -19,10 +18,10 @@ export default class Post extends BaseModel {
   declare id: string
 
   @column()
-  declare userId: string
+  declare clientId: string
 
   @column()
-  declare siteId: string
+  declare userId: string
 
   @column()
   declare slug: string
@@ -59,9 +58,6 @@ export default class Post extends BaseModel {
   // Relaciones
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>
-
-  @belongsTo(() => Site)
-  declare site: BelongsTo<typeof Site>
 
   @manyToMany(() => Category, {
     pivotTable: 'category_posts',

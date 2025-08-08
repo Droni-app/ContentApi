@@ -2,7 +2,6 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { randomUUID } from 'node:crypto'
-import Site from '#models/site'
 import User from '#models/user'
 
 export default class Attachment extends BaseModel {
@@ -10,7 +9,7 @@ export default class Attachment extends BaseModel {
   declare id: string
 
   @column()
-  declare siteId: string
+  declare clientId: string
 
   @column()
   declare userId: string
@@ -34,10 +33,6 @@ export default class Attachment extends BaseModel {
   static assignUuid(attachment: Attachment) {
     attachment.id = randomUUID()
   }
-
-  // Relaciones
-  @belongsTo(() => Site)
-  declare site: BelongsTo<typeof Site>
 
   @belongsTo(() => User)
   declare user: BelongsTo<typeof User>

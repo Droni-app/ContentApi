@@ -9,7 +9,6 @@ import {
 } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import { randomUUID } from 'node:crypto'
-import Site from '#models/site'
 import Post from '#models/post'
 
 export default class Category extends BaseModel {
@@ -17,7 +16,7 @@ export default class Category extends BaseModel {
   declare id: string
 
   @column()
-  declare siteId: string
+  declare clientId: string
 
   @column()
   declare parentId: string | null
@@ -44,10 +43,6 @@ export default class Category extends BaseModel {
   static assignUuid(category: Category) {
     category.id = randomUUID()
   }
-
-  // Relaciones
-  @belongsTo(() => Site)
-  declare site: BelongsTo<typeof Site>
 
   @belongsTo(() => Category, {
     foreignKey: 'parentId',
