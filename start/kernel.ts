@@ -32,7 +32,10 @@ server.use([
  * The router middleware stack runs middleware on all the HTTP
  * requests with a registered route.
  */
-router.use([() => import('@adonisjs/core/bodyparser_middleware')])
+router.use([
+  () => import('@adonisjs/core/bodyparser_middleware'),
+  () => import('#middleware/site_middleware'),
+])
 
 /**
  * Named middleware collection must be explicitly assigned to
@@ -40,4 +43,5 @@ router.use([() => import('@adonisjs/core/bodyparser_middleware')])
  */
 export const middleware = router.named({
   auth: () => import('#middleware/auth_middleware'),
+  admin: () => import('#middleware/admin_middleware'),
 })

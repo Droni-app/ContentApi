@@ -1,47 +1,35 @@
 import type { HttpContext } from '@adonisjs/core/http'
+import Post from '#models/post'
 
 export default class PostsController {
   /**
    * Display a list of resource
    */
-  async index({ user }: HttpContext) {
-    return { message: 'List of posts', user }
-  }
-
-  /**
-   * Handle form submission for the create action
-   */
-  async store({ request }: HttpContext) {
-    const postData = request.body()
-    // Here you would typically save the postData to the database
-    return { message: 'Post created', data: postData }
+  async index({ clientId }: HttpContext) {
+    const posts = await Post.query()
+      .where('clientId', clientId)
+      .where('active', true)
+      .preload('user')
+      .preload('categories')
+      .preload('attrs')
+      .orderBy('createdAt', 'desc')
+      .paginate(1, 10)
+    return posts
   }
 
   /**
    * Show individual record
    */
   async show({ params }: HttpContext) {
-    const postId = params.id
-    // Here you would typically fetch the post by ID from the database
-    return { message: `Showing post with ID: ${postId}` }
-  }
+    const postSlug = params.id
+    const post = await Post.query()
+      .where('slug', postSlug)
+      .where('active', true)
+      .preload('user')
+      .preload('categories')
+      .preload('attrs')
+      .firstOrFail()
 
-  /**
-   * Handle form submission for the edit action
-   */
-  async update({ params, request }: HttpContext) {
-    const postId = params.id
-    const updatedData = request.body()
-    // Here you would typically update the post by ID in the database
-    return { message: `Post with ID: ${postId} updated`, data: updatedData }
-  }
-
-  /**
-   * Delete record
-   */
-  async destroy({ params }: HttpContext) {
-    const postId = params.id
-    // Here you would typically delete the post by ID from the database
-    return { message: `Post with ID: ${postId} deleted` }
+    return post
   }
 }

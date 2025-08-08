@@ -12,14 +12,16 @@ import { middleware } from '#start/kernel'
 
 const PostsController = () => import('#controllers/posts_controller')
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
+router.group(() => {
+  router.resource('posts', PostsController).only(['index', 'show'])
 })
 
+/* Admin routes */
+const AdminPostsController = () => import('#controllers/Admin/posts_controller')
 router
   .group(() => {
-    router.resource('posts', PostsController).apiOnly()
+    router.resource('posts', AdminPostsController).apiOnly()
   })
-  .use([middleware.auth()])
+  .use([middleware.admin()])
+  .prefix('admin')
+  .as('admin')
