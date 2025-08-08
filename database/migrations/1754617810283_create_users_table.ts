@@ -5,8 +5,13 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-
+      table.uuid('id').primary()
+      table.uuid('site_id').notNullable().references('id').inTable('sites').onDelete('CASCADE')
+      table.string('name').notNullable()
+      table.string('email', 254).notNullable().unique()
+      table.string('provider').nullable()
+      table.string('provider_id').nullable()
+      table.string('avatar').nullable()
       table.timestamp('created_at')
       table.timestamp('updated_at')
     })
