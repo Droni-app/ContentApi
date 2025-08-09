@@ -40,5 +40,5 @@ export default await Env.create(new URL('../', import.meta.url), {
   SPACES_REGION: Env.schema.string(),
   SPACES_BUCKET: Env.schema.string(),
   SPACES_ENDPOINT: Env.schema.string(),
-  SPACES_URL: Env.schema.string({ format: 'url' }),
+  SPACES_URL: Env.schema.string(),
 })
