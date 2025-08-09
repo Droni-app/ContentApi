@@ -38,7 +38,7 @@ export default class AttachmentsController {
     }
 
     // Generar ruta única por sitio y usuario
-    const path = `${clientId}/${user!.id}/${payload.file.size}-${string.slug(payload.file.clientName)}`
+    const path = `${clientId.split('.')[0]}/${user!.id}/${payload.file.size}-${string.slug(payload.file.clientName)}`
 
     // store file
     await payload.file.moveToDisk(path)
