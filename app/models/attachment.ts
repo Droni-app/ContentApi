@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, belongsTo, beforeCreate } from '@adonisjs/lucid/orm'
+import { BaseModel, column, belongsTo, beforeCreate, computed } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { randomUUID } from 'node:crypto'
 import User from '#models/user'
+import Env from '#start/env'
 
 export default class Attachment extends BaseModel {
   @column({ isPrimary: true })
@@ -28,6 +29,11 @@ export default class Attachment extends BaseModel {
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+
+  @computed()
+  get url() {
+    return `${Env.get('SPACES_URL')}/${this.path}`
+  }
 
   @beforeCreate()
   static assignUuid(attachment: Attachment) {

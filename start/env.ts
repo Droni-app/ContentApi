@@ -28,4 +28,17 @@ export default await Env.create(new URL('../', import.meta.url), {
   DB_USER: Env.schema.string(),
   DB_PASSWORD: Env.schema.string.optional(),
   DB_DATABASE: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for configuring the drive package
+  |----------------------------------------------------------
+  */
+  DRIVE_DISK: Env.schema.enum(['spaces'] as const),
+  SPACES_KEY: Env.schema.string(),
+  SPACES_SECRET: Env.schema.string(),
+  SPACES_REGION: Env.schema.string(),
+  SPACES_BUCKET: Env.schema.string(),
+  SPACES_ENDPOINT: Env.schema.string(),
+  SPACES_URL: Env.schema.string({ format: 'url' }),
 })
