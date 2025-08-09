@@ -10,5 +10,12 @@ export const createPostValidator = vine.compile(
     content: vine.string().trim().escape().optional(),
     format: vine.enum(['markdown', 'html']).optional(),
     active: vine.boolean().optional(),
+    categories: vine
+      .array(
+        vine.object({
+          id: vine.string().uuid(),
+        })
+      )
+      .optional(),
   })
 )

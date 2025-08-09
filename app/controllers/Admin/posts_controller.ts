@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import Post from '#models/post'
 import { createPostValidator } from '#validators/Admin/post'
 import string from '@adonisjs/core/helpers/string'
+import Category from '#models/category'
 
 export default class AdminPostsController {
   /**
@@ -36,12 +37,28 @@ export default class AdminPostsController {
     const slug = existsSlug
       ? `${string.slug(payload.name)}-${Date.now()}`
       : string.slug(payload.name)
+
+    // Validar categorías por clientId
+    if (payload.categories && payload.categories.length > 0) {
+      const ids = Array.from(new Set(payload.categories.map((c) => c.id)))
+      const valid = await Category.query().where('clientId', clientId).whereIn('id', ids)
+      if (valid.length !== ids.length) {
+        throw new Error('One or more categories do not belong to this client')
+      }
+    }
+
     const post = await Post.create({
       ...payload,
       slug,
       clientId,
-      userId: user.id, // Assuming the user is authenticated and available in the context
+      userId: user.id,
     })
+
+    if (payload.categories && payload.categories.length > 0) {
+      await post.related('categories').sync(payload.categories.map((c) => c.id))
+      await post.load('categories')
+    }
+
     return post
   }
 
@@ -66,10 +83,20 @@ export default class AdminPostsController {
     const payload = await createPostValidator.validate(request.body())
     const post = await Post.query().where('clientId', clientId).where('id', params.id).firstOrFail()
 
+    // Validar categorías por clientId
+    if (payload.categories && payload.categories.length > 0) {
+      const ids = Array.from(new Set(payload.categories.map((c) => c.id)))
+      const valid = await Category.query().where('clientId', clientId).whereIn('id', ids)
+      if (valid.length !== ids.length) {
+        throw new Error('One or more categories do not belong to this client')
+      }
+    }
+    await post.related('categories').sync(payload.categories?.map((c) => c.id) ?? [])
     post.merge({
       ...payload,
     })
     await post.save()
+    await post.load('categories')
     return post
   }
 
