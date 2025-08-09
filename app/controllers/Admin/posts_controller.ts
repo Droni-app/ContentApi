@@ -3,7 +3,7 @@ import Post from '#models/post'
 import { createPostValidator } from '#validators/Admin/post'
 import string from '@adonisjs/core/helpers/string'
 
-export default class PostsController {
+export default class AdminPostsController {
   /**
    * Display a list of resource
    */

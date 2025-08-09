@@ -3,7 +3,7 @@ import Category from '#models/category'
 import { createCategoryValidator } from '#validators/Admin/category'
 import string from '@adonisjs/core/helpers/string'
 
-export default class CategoriesController {
+export default class AdminCategoriesController {
   /**
    * Display a list of resource
    */
