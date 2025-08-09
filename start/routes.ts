@@ -12,7 +12,10 @@ import { middleware } from '#start/kernel'
 
 const PostsController = () => import('#controllers/posts_controller')
 const AttachmentsController = () => import('#controllers/attachments_controller')
-
+/* Health check route */
+router.get('/', async ({ response }) => {
+  return response.ok({ status: 'ok' })
+})
 /* Public routes */
 router.group(() => {
   router.resource('posts', PostsController).only(['index', 'show'])
