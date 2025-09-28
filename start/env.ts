@@ -41,4 +41,11 @@ export default await Env.create(new URL('../', import.meta.url), {
   SPACES_BUCKET: Env.schema.string(),
   SPACES_ENDPOINT: Env.schema.string(),
   SPACES_URL: Env.schema.string(),
+
+  /*
+  |----------------------------------------------------------
+  | Variables for sites available
+  |----------------------------------------------------------
+  */
+  AVAILABLE_SITES: Env.schema.string(),
 })

@@ -39,6 +39,6 @@ router
     router.resource('posts.attrs', AdminPostAttrsController).only(['store', 'destroy'])
     router.resource('attachments', AdminAttachmentsController).only(['index', 'destroy'])
   })
-  .use([middleware.admin()])
+  .use([middleware.auth(), middleware.admin()])
   .prefix('admin')
   .as('admin')

@@ -45,16 +45,20 @@ export default class AuthMiddleware {
       }
 
       // Buscar el usuario en la base de datos
-      const user = await User.firstOrCreate({
-        authId: userInfo.sub,
-        siteId: userInfo.hd,
-        name: userInfo.name,
-        email: userInfo.email,
-      })
+      const user = await User.updateOrCreate(
+        {
+          authId: userInfo.sub,
+          siteId: ctx.siteId,
+        },
+        {
+          name: userInfo.name,
+          email: userInfo.email,
+          avatar: userInfo.picture,
+        }
+      )
 
-      // Agregar el usuario y siteId al contexto
+      // Agregar el usuario al contexto
       ctx.user = user
-      ctx.siteId = userInfo.hd
 
       return await next()
     } catch (error) {
