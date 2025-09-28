@@ -10,6 +10,9 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from '#start/kernel'
 
+import AutoSwagger from 'adonis-autoswagger'
+import swagger from '#config/swagger'
+
 const PostsController = () => import('#controllers/posts_controller')
 const AttachmentsController = () => import('#controllers/attachments_controller')
 /* Health check route */
@@ -42,3 +45,15 @@ router
   .use([middleware.auth(), middleware.admin()])
   .prefix('admin')
   .as('admin')
+
+/* Swagger */
+router.get('/swagger', async () => {
+  return AutoSwagger.default.docs(router.toJSON(), swagger)
+})
+
+// Renders Swagger-UI and passes YAML-output of /swagger
+router.get('/docs', async () => {
+  return AutoSwagger.default.ui('/swagger', swagger)
+  // return AutoSwagger.default.scalar("/swagger"); to use Scalar instead. If you want, you can pass proxy url as second argument here.
+  // return AutoSwagger.default.rapidoc("/swagger", "view"); to use RapiDoc instead (pass "view" default, or "read" to change the render-style)
+})
