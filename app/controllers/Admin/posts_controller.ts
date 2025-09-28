@@ -8,12 +8,12 @@ export default class AdminPostsController {
   /**
    * Display a list of resource
    */
-  async index({ clientId, request }: HttpContext) {
+  async index({ siteId, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 10)
     const q = request.input('q', '')
     const posts = await Post.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .preload('user')
       .preload('categories')
       .preload('attrs')
@@ -28,29 +28,29 @@ export default class AdminPostsController {
   /**
    * Handle form submission for the create action
    */
-  async store({ clientId, user, request }: HttpContext) {
+  async store({ siteId, user, request }: HttpContext) {
     const payload = await createPostValidator.validate(request.body())
     const existsSlug = await Post.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('slug', string.slug(payload.name))
       .first()
     const slug = existsSlug
       ? `${string.slug(payload.name)}-${Date.now()}`
       : string.slug(payload.name)
 
-    // Validar categorías por clientId
+    // Validar categorías por siteId
     if (payload.categories && payload.categories.length > 0) {
       const ids = Array.from(new Set(payload.categories.map((c) => c.id)))
-      const valid = await Category.query().where('clientId', clientId).whereIn('id', ids)
+      const valid = await Category.query().where('siteId', siteId).whereIn('id', ids)
       if (valid.length !== ids.length) {
-        throw new Error('One or more categories do not belong to this client')
+        throw new Error('One or more categories do not belong to this site')
       }
     }
 
     const post = await Post.create({
       ...payload,
       slug,
-      clientId,
+      siteId,
       userId: user.id,
     })
 
@@ -65,9 +65,9 @@ export default class AdminPostsController {
   /**
    * Show individual record
    */
-  async show({ clientId, params }: HttpContext) {
+  async show({ siteId, params }: HttpContext) {
     const post = await Post.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('id', params.id)
       .preload('user')
       .preload('categories')
@@ -79,16 +79,16 @@ export default class AdminPostsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ clientId, params, request }: HttpContext) {
+  async update({ siteId, params, request }: HttpContext) {
     const payload = await createPostValidator.validate(request.body())
-    const post = await Post.query().where('clientId', clientId).where('id', params.id).firstOrFail()
+    const post = await Post.query().where('siteId', siteId).where('id', params.id).firstOrFail()
 
-    // Validar categorías por clientId
+    // Validar categorías por siteId
     if (payload.categories && payload.categories.length > 0) {
       const ids = Array.from(new Set(payload.categories.map((c) => c.id)))
-      const valid = await Category.query().where('clientId', clientId).whereIn('id', ids)
+      const valid = await Category.query().where('siteId', siteId).whereIn('id', ids)
       if (valid.length !== ids.length) {
-        throw new Error('One or more categories do not belong to this client')
+        throw new Error('One or more categories do not belong to this site')
       }
     }
     await post.related('categories').sync(payload.categories?.map((c) => c.id) ?? [])
@@ -103,8 +103,8 @@ export default class AdminPostsController {
   /**
    * Delete record
    */
-  async destroy({ clientId, params }: HttpContext) {
-    const post = await Post.query().where('clientId', clientId).where('id', params.id).firstOrFail()
+  async destroy({ siteId, params }: HttpContext) {
+    const post = await Post.query().where('siteId', siteId).where('id', params.id).firstOrFail()
     await post.delete()
     return post
   }

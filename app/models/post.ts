@@ -18,7 +18,7 @@ export default class Post extends BaseModel {
   declare id: string
 
   @column()
-  declare clientId: string
+  declare siteId: string
 
   @column()
   declare userId: string

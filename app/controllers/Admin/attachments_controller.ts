@@ -6,13 +6,13 @@ export default class AdminAttachmentsController {
   /**
    * Lista todos los archivos adjuntos del sitio con paginación y búsqueda
    */
-  public async index({ clientId, request, response }: HttpContext) {
+  public async index({ siteId, request, response }: HttpContext) {
     const page = request.input('page', 1)
     const perPage = request.input('perPage', 10)
     const q = request.input('q')
 
     const attachments = await Attachment.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .if(q, (qB) => {
         qB.whereILike('name', `%${q}%`)
       })
@@ -25,10 +25,10 @@ export default class AdminAttachmentsController {
   /**
    * Elimina un archivo adjunto
    */
-  public async destroy({ clientId, params, response }: HttpContext) {
+  public async destroy({ siteId, params, response }: HttpContext) {
     const attachment = await Attachment.query()
       .where('id', params.id)
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .firstOrFail()
 
     // Eliminar el archivo físico

@@ -7,13 +7,13 @@ export default class AdminCategoriesController {
   /**
    * Display a list of resource
    */
-  async index({ clientId, request }: HttpContext) {
+  async index({ siteId, request }: HttpContext) {
     const page = request.input('page', 1)
     const limit = request.input('limit', 10)
     const q = request.input('q', '')
 
     const categories = await Category.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .preload('parent')
       .preload('children')
       .if(q, (query) => {
@@ -28,17 +28,17 @@ export default class AdminCategoriesController {
   /**
    * Handle form submission for the create action
    */
-  async store({ clientId, request }: HttpContext) {
+  async store({ siteId, request }: HttpContext) {
     const payload = await createCategoryValidator.validate(request.body())
 
-    // Ensure parent category (if provided) belongs to the same client
+    // Ensure parent category (if provided) belongs to the same site
     if (payload.parentId) {
-      await Category.query().where('clientId', clientId).where('id', payload.parentId).firstOrFail()
+      await Category.query().where('siteId', siteId).where('id', payload.parentId).firstOrFail()
     }
 
     const baseSlug = string.slug(payload.name)
     const existsSlug = await Category.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('slug', baseSlug)
       .first()
 
@@ -47,7 +47,7 @@ export default class AdminCategoriesController {
     const category = await Category.create({
       ...payload,
       slug,
-      clientId,
+      siteId,
     })
 
     return category
@@ -56,9 +56,9 @@ export default class AdminCategoriesController {
   /**
    * Show individual record
    */
-  async show({ clientId, params }: HttpContext) {
+  async show({ siteId, params }: HttpContext) {
     const category = await Category.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('id', params.id)
       .preload('parent')
       .preload('children')
@@ -70,16 +70,16 @@ export default class AdminCategoriesController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ clientId, params, request }: HttpContext) {
+  async update({ siteId, params, request }: HttpContext) {
     const payload = await createCategoryValidator.validate(request.body())
 
-    // Ensure parent category (if provided) belongs to the same client
+    // Ensure parent category (if provided) belongs to the same site
     if (payload.parentId) {
-      await Category.query().where('clientId', clientId).where('id', payload.parentId).firstOrFail()
+      await Category.query().where('siteId', siteId).where('id', payload.parentId).firstOrFail()
     }
 
     const category = await Category.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('id', params.id)
       .firstOrFail()
 
@@ -94,9 +94,9 @@ export default class AdminCategoriesController {
   /**
    * Delete record
    */
-  async destroy({ clientId, params }: HttpContext) {
+  async destroy({ siteId, params }: HttpContext) {
     const category = await Category.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('id', params.id)
       .firstOrFail()
 

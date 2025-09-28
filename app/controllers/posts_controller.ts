@@ -5,9 +5,9 @@ export default class PostsController {
   /**
    * Display a list of resource
    */
-  async index({ clientId }: HttpContext) {
+  async index({ siteId }: HttpContext) {
     const posts = await Post.query()
-      .where('clientId', clientId)
+      .where('siteId', siteId)
       .where('active', true)
       .preload('user')
       .preload('categories')

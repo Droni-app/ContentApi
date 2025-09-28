@@ -10,7 +10,10 @@ export default class User extends BaseModel {
   declare id: string
 
   @column()
-  declare clientId: string
+  declare siteId: string
+
+  @column()
+  declare authId: string
 
   @column()
   declare name: string

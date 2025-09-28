@@ -16,7 +16,7 @@ export default class Category extends BaseModel {
   declare id: string
 
   @column()
-  declare clientId: string
+  declare siteId: string
 
   @column()
   declare parentId: string | null

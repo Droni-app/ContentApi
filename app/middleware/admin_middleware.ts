@@ -1,48 +1,13 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import type { NextFn } from '@adonisjs/core/types/http'
-import { OAuth2Client } from 'google-auth-library'
-import User from '#models/user'
 
 export default class AdminMiddleware {
-  private googleClient: OAuth2Client
-  private googleClientIds: string[]
-
-  constructor() {
-    this.googleClient = new OAuth2Client()
-    this.googleClientIds = [
-      '213131965361-nt6itpml1c9lseihm352j1ab7nmp27k0.apps.googleusercontent.com', // Droni.co
-    ]
-  }
-
   async handle(ctx: HttpContext, next: NextFn) {
-    const authHeader = ctx.request.header('Authorization')
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return ctx.response.status(401).send({ error: 'Token no proporcionado' })
-    }
-
-    const idToken = authHeader.replace('Bearer ', '')
-
     try {
       // Verificar el ID Token de Google con múltiples audience (Client IDs)
-      const ticket = await this.googleClient.verifyIdToken({
-        idToken: idToken,
-        audience: this.googleClientIds,
-      })
-
-      const payload = ticket.getPayload()
-
-      if (!payload) {
-        return ctx.response.status(401).send({ error: 'Token inválido' })
+      if (ctx.user.role !== 'admin' && ctx.user.role !== 'editor') {
+        return ctx.response.status(403).send({ error: 'Acceso denegado.' })
       }
-
-      const user = await User.query()
-        .where('email', payload.email!)
-        .where('clientId', payload.aud!)
-        .where('role', 'admin')
-        .firstOrFail()
-      ctx.user = user
-
       return await next()
     } catch (error) {
       console.error('Error validando token de Google:', error)
