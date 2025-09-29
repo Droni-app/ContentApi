@@ -15,6 +15,7 @@ import Attr from '#models/attr'
 
 export default class Post extends BaseModel {
   @column({ isPrimary: true })
+  // @required()
   declare id: string
 
   @column()

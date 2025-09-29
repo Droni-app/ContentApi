@@ -3,7 +3,11 @@ import Post from '#models/post'
 
 export default class PostsController {
   /**
-   * Display a list of resource
+   * @index
+   * @tag Posts
+   * @operationId getPosts
+   * @summary Returns array of posts and it's relations
+   * @responseBody 200 - <Post[]>.with(user, categories, attrs).paginated(data, meta)
    */
   async index({ siteId }: HttpContext) {
     const posts = await Post.query()
@@ -18,7 +22,11 @@ export default class PostsController {
   }
 
   /**
-   * Show individual record
+   * @show
+   * @tag Posts
+   * @operationId getPost
+   * @summary Returns a single post by slug and it's relations
+   * @responseBody 200 - <Post>.with(user, categories, attrs)
    */
   async show({ params }: HttpContext) {
     const postSlug = params.id

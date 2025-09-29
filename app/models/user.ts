@@ -4,9 +4,9 @@ import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { randomUUID } from 'node:crypto'
 import Post from '#models/post'
 import Attachment from '#models/attachment'
-
 export default class User extends BaseModel {
   @column({ isPrimary: true })
+  // @required()
   declare id: string
 
   @column()
@@ -25,7 +25,7 @@ export default class User extends BaseModel {
   declare avatar: string | null
 
   @column()
-  declare role: 'user' | 'editor' | 'admin'
+  declare role: string
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

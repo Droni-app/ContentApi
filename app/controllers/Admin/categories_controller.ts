@@ -5,7 +5,11 @@ import string from '@adonisjs/core/helpers/string'
 
 export default class AdminCategoriesController {
   /**
-   * Display a list of resource
+   * @index
+   * @tag Admin_Categories
+   * @operationId adminGetCategories
+   * @summary Returns list of paginated categories for site
+   * @responseBody 200 - <Category[]>.with(parent, children).paginated(data, meta)
    */
   async index({ siteId, request }: HttpContext) {
     const page = request.input('page', 1)
@@ -24,9 +28,12 @@ export default class AdminCategoriesController {
 
     return categories
   }
-
   /**
-   * Handle form submission for the create action
+   * @store
+   * @tag Admin_Categories
+   * @operationId adminCreateCategory
+   * @summary Creates a new category
+   * @responseBody 201 - <Category>
    */
   async store({ siteId, request }: HttpContext) {
     const payload = await createCategoryValidator.validate(request.body())
@@ -52,9 +59,12 @@ export default class AdminCategoriesController {
 
     return category
   }
-
   /**
-   * Show individual record
+   * @show
+   * @tag Admin_Categories
+   * @operationId adminGetCategory
+   * @summary Returns a single category by id and it's relations
+   * @responseBody 200 - <Category>.with(parent, children)
    */
   async show({ siteId, params }: HttpContext) {
     const category = await Category.query()
@@ -66,9 +76,12 @@ export default class AdminCategoriesController {
 
     return category
   }
-
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @tag Admin_Categories
+   * @operationId adminUpdateCategory
+   * @summary Updates a category by id
+   * @responseBody 200 - <Category>
    */
   async update({ siteId, params, request }: HttpContext) {
     const payload = await createCategoryValidator.validate(request.body())
@@ -90,9 +103,12 @@ export default class AdminCategoriesController {
     await category.save()
     return category
   }
-
   /**
-   * Delete record
+   * @destroy
+   * @tag Admin_Categories
+   * @operationId adminDeleteCategory
+   * @summary Deletes a category by id
+   * @responseBody 200 - <Category>
    */
   async destroy({ siteId, params }: HttpContext) {
     const category = await Category.query()

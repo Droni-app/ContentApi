@@ -6,6 +6,13 @@ import drive from '@adonisjs/drive/services/main'
 import db from '@adonisjs/lucid/services/db'
 
 export default class AttachmentsController {
+  /**
+   * @index
+   * @tag Attachments
+   * @operationId getAttachments
+   * @summary Returns list of paginated attachments for user
+   * @responseBody 200 - <Attachment[]>.paginated(data, meta)
+   */
   public async index({ user, siteId, request }: HttpContext) {
     const page = request.input('page', 1)
     const perPage = request.input('perPage', 10)
@@ -22,6 +29,13 @@ export default class AttachmentsController {
 
     return attachments
   }
+  /**
+   * @store
+   * @tag Attachments
+   * @operationId createAttachment
+   * @summary Creates a new attachment
+   * @responseBody 201 - <Attachment>
+   */
   public async store({ user, siteId, request }: HttpContext) {
     // Validar nombre si se proporciona
     const payload = await request.validateUsing(createAttachmentValidator)
@@ -55,6 +69,13 @@ export default class AttachmentsController {
 
     return attachment
   }
+  /**
+   * @destroy
+   * @tag Attachments
+   * @operationId deleteAttachment
+   * @summary Deletes a attachment by id
+   * @responseBody 200 - <Attachment>
+   */
   public async destroy({ user, siteId, params }: HttpContext) {
     const attachment = await Attachment.query()
       .where('id', params.id)

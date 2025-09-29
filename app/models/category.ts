@@ -13,6 +13,7 @@ import Post from '#models/post'
 
 export default class Category extends BaseModel {
   @column({ isPrimary: true })
+  // @required()
   declare id: string
 
   @column()

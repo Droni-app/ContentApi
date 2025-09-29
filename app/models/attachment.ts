@@ -7,6 +7,7 @@ import Env from '#start/env'
 
 export default class Attachment extends BaseModel {
   @column({ isPrimary: true })
+  // @required()
   declare id: string
 
   @column()

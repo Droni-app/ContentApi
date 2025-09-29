@@ -4,7 +4,11 @@ import drive from '@adonisjs/drive/services/main'
 
 export default class AdminAttachmentsController {
   /**
-   * Lista todos los archivos adjuntos del sitio con paginación y búsqueda
+   * @index
+   * @tag Admin_Attachments
+   * @operationId adminGetAttachments
+   * @summary Returns list of paginated attachments for site
+   * @responseBody 200 - <Attachment[]>.with(user).paginated(data, meta)
    */
   public async index({ siteId, request, response }: HttpContext) {
     const page = request.input('page', 1)
@@ -21,11 +25,14 @@ export default class AdminAttachmentsController {
       .paginate(page, perPage)
     return response.ok(attachments)
   }
-
   /**
-   * Elimina un archivo adjunto
+   * @destroy
+   * @tag Admin_Attachments
+   * @operationId adminDeleteAttachment
+   * @summary Deletes a attachment by id
+   * @responseBody 200 - <Attachment>
    */
-  public async destroy({ siteId, params, response }: HttpContext) {
+  public async destroy({ siteId, params }: HttpContext) {
     const attachment = await Attachment.query()
       .where('id', params.id)
       .where('siteId', siteId)
@@ -36,6 +43,6 @@ export default class AdminAttachmentsController {
     await disk.delete(attachment.path)
 
     await attachment.delete()
-    return response.noContent()
+    return attachment
   }
 }

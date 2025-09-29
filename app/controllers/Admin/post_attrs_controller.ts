@@ -4,6 +4,13 @@ import Post from '#models/post'
 import { createPostAttrValidator } from '#validators/Admin/post_attr'
 
 export default class AdminPostAttrsController {
+  /**
+   * @store
+   * @tag Admin_Posts_Attrs
+   * @operationId adminCreatePostAttr
+   * @summary Creates a new post attribute
+   * @responseBody 201 - <Attr>
+   */
   async store({ siteId, request, params }: HttpContext) {
     const post = await Post.query()
       .where('siteId', siteId)
@@ -16,7 +23,13 @@ export default class AdminPostAttrsController {
     })
     return attr
   }
-
+  /**
+   * @destroy
+   * @tag Admin_Posts_Attrs
+   * @operationId adminDeletePostAttr
+   * @summary Deletes a post attribute
+   * @responseBody 200 - <Attr>
+   */
   async destroy({ siteId, params }: HttpContext) {
     const post = await Post.query()
       .where('siteId', siteId)

@@ -6,7 +6,11 @@ import Category from '#models/category'
 
 export default class AdminPostsController {
   /**
-   * Display a list of resource
+   * @index
+   * @tag Admin_Posts
+   * @operationId adminGetPosts
+   * @summary Returns a list of paginated posts for site
+   * @responseBody 200 - <Post[]>.with(user, categories, attrs).paginated(data, meta)
    */
   async index({ siteId, request }: HttpContext) {
     const page = request.input('page', 1)
@@ -24,9 +28,12 @@ export default class AdminPostsController {
       .paginate(page, limit)
     return posts
   }
-
   /**
-   * Handle form submission for the create action
+   * @store
+   * @tag Admin_Posts
+   * @operationId adminCreatePost
+   * @summary Creates a new post
+   * @responseBody 201 - <Post>
    */
   async store({ siteId, user, request }: HttpContext) {
     const payload = await createPostValidator.validate(request.body())
@@ -61,9 +68,12 @@ export default class AdminPostsController {
 
     return post
   }
-
   /**
-   * Show individual record
+   * @show
+   * @tag Admin_PostS
+   * @operationId adminGetPost
+   * @summary Returns a single post by id and it's relations
+   * @responseBody 200 - <Post>.with(user, categories, attrs)
    */
   async show({ siteId, params }: HttpContext) {
     const post = await Post.query()
@@ -75,9 +85,12 @@ export default class AdminPostsController {
       .firstOrFail()
     return post
   }
-
   /**
-   * Handle form submission for the edit action
+   * @update
+   * @tag Admin_Posts
+   * @operationId adminUpdatePost
+   * @summary Updates a post
+   * @responseBody 200 - <Post>.with(categories)
    */
   async update({ siteId, params, request }: HttpContext) {
     const payload = await createPostValidator.validate(request.body())
@@ -99,9 +112,12 @@ export default class AdminPostsController {
     await post.load('categories')
     return post
   }
-
   /**
-   * Delete record
+   * @destroy
+   * @tag Admin_PostS
+   * @operationId adminDeletePost
+   * @summary Deletes a post
+   * @responseBody 200 - <Post>
    */
   async destroy({ siteId, params }: HttpContext) {
     const post = await Post.query().where('siteId', siteId).where('id', params.id).firstOrFail()
