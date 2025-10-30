@@ -14,6 +14,7 @@ import swagger from '#config/swagger'
 
 const PostsController = () => import('#controllers/posts_controller')
 const AttachmentsController = () => import('#controllers/attachments_controller')
+const UsersController = () => import('#controllers/users_controller')
 /* Health check route */
 router.get('/', async ({ response }) => {
   return response.ok({ status: 'ok' })
@@ -26,6 +27,7 @@ router.group(() => {
 router
   .group(() => {
     router.resource('attachments', AttachmentsController).only(['index', 'store', 'destroy'])
+    router.get('users/me', [UsersController, 'me'])
   })
   .use([middleware.auth()])
 
