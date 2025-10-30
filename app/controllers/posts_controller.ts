@@ -9,15 +9,29 @@ export default class PostsController {
    * @summary Returns array of posts and it's relations
    * @responseBody 200 - <Post[]>.with(user, categories, attrs).paginated(data, meta)
    */
-  async index({ siteId }: HttpContext) {
+  async index({ siteId, request }: HttpContext) {
+    const { page, perPage, q, category } = request.qs()
     const posts = await Post.query()
       .where('siteId', siteId)
       .where('active', true)
+      .if(q, (query) => {
+        query.andWhere((subQuery) => {
+          subQuery
+            .where('name', 'like', `%${q}%`)
+            .orWhere('description', 'like', `%${q}%`)
+            .orWhere('content', 'like', `%${q}%`)
+        })
+      })
+      .if(category, (query) => {
+        query.whereHas('categories', (categoryQuery) => {
+          categoryQuery.where('slug', category)
+        })
+      })
       .preload('user')
       .preload('categories')
       .preload('attrs')
       .orderBy('createdAt', 'desc')
-      .paginate(1, 10)
+      .paginate(page, perPage)
     return posts
   }
 
