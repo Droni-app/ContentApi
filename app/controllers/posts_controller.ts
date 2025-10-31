@@ -10,7 +10,7 @@ export default class PostsController {
    * @responseBody 200 - <Post[]>.with(user, categories, attrs).paginated(data, meta)
    */
   async index({ siteId, request }: HttpContext) {
-    const { page, perPage, q, category } = request.qs()
+    const { page = 1, perPage = 10, q = '', category = '' } = request.qs()
     const posts = await Post.query()
       .where('siteId', siteId)
       .where('active', true)

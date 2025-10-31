@@ -13,9 +13,7 @@ export default class AdminPostsController {
    * @responseBody 200 - <Post[]>.with(user, categories, attrs).paginated(data, meta)
    */
   async index({ siteId, request }: HttpContext) {
-    const page = request.input('page', 1)
-    const limit = request.input('limit', 10)
-    const q = request.input('q', '')
+    const { page = 1, perPage = 10, q = '', category = '' } = request.qs()
     const posts = await Post.query()
       .where('siteId', siteId)
       .preload('user')
@@ -24,8 +22,13 @@ export default class AdminPostsController {
       .if(q, (query) => {
         query.where('name', 'LIKE', `%${q}%`).orWhere('description', 'LIKE', `%${q}%`)
       })
+      .if(category, (query) => {
+        query.whereHas('categories', (categoryQuery) => {
+          categoryQuery.where('slug', category)
+        })
+      })
       .orderBy('createdAt', 'desc')
-      .paginate(page, limit)
+      .paginate(page, perPage)
     return posts
   }
   /**
